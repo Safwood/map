@@ -16,10 +16,10 @@ rules.push({
 
 module.exports = {
     entry: {
-        index: './src/js/index.js'
+        index: './js/index.js'
     },
     devServer: {
-        index: './src/index.html',
+        index: './index.html',
         overlay: true
     },
     output: {
