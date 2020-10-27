@@ -137,8 +137,16 @@ function init() {
     
   }
 
-  document.body.addEventListener('click', (e) => {
+  function contains(arr, elem) {
+    for (let i = 0; i < arr.length; i++) {
+        if (JSON.stringify(arr[i]) === JSON.stringify(elem)) {
+            return true;
+        }
+    }
+    return false;
+  }
 
+  document.body.addEventListener('click', (e) => {
     if (e.target.dataset.role === 'review-add') {
       const reviewForm = document.querySelector('#review-form')
       const coords = JSON.parse(reviewForm.dataset.coords);
@@ -153,6 +161,21 @@ function init() {
         }
       }
   
+      ////////
+
+      const savedMarks = JSON.parse(localStorage.getItem('markers'))
+      const array = [];
+
+      if  (savedMarks) {
+        for (const mark of savedMarks) {
+        const coord = mark.coord;
+        array.push(coord)
+      }}
+
+      const answer = contains(array, coords)
+      console.log(answer)
+
+      //////////
       let markers = [];
   
       if (localStorage.getItem('markers')) {
@@ -162,9 +185,13 @@ function init() {
       markers.push(data);
   
       localStorage.setItem('markers', JSON.stringify(markers));
-      if (!myGeoObjects.includes(coords)){
+
+      if (!answer) {
         createPlacemark(coords)
       }
+
+      ////////////////////
+
       closeBalloon()
       
     }

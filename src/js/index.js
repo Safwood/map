@@ -140,7 +140,7 @@ class GeoReview {
   }
 
   onDocumentClick(e) {
-    if (e.target.dataset.role === 'review-add') {
+    if ((JSON.stringify(e.target.dataset.role) == (JSON.stringify('review-add')))) {
       const reviewForm = document.querySelector('#review-form')
       const coords = JSON.parse(reviewForm.dataset.coords);
 
