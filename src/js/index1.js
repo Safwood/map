@@ -37,8 +37,6 @@ function init() {
       myClusterer.add(myGeoObjects);
     //}
     
-    console.log(myGeoObjects)
-    
     placemark.events.add('click', (e) => {
       const placemarkCoords = e.get('target').geometry.getCoordinates();
 
@@ -64,9 +62,23 @@ function init() {
   function addExistingPlacemarks() {
     if  (localStorage.getItem('markers')) {
       const allReviews = JSON.parse(localStorage.getItem('markers'));
+      const newArray = [];
+      const array = [];
 
-      for (const review of allReviews) {
-        createPlacemark(review.coord);
+      console.log(newArray)
+      for (const el of allReviews) {
+        //const string = JSON.stringify(el)
+        if (!newArray || !newArray.includes(JSON.stringify(el.coord))) {
+          newArray.push(JSON.stringify(el.coord))
+          array.push(el.coord)
+
+          console.log(array)
+        }
+        
+      }
+
+      for (const review of array) {
+        createPlacemark(review);
       }
     }
 
@@ -114,9 +126,10 @@ function init() {
 
   function onPlacemarkClick(coords) {
     const list = JSON.parse(localStorage.getItem('markers'));
+    const shortList = []; 
 
     for (const mark of list) {
-      const shortList = []; 
+      
 
       console.log(mark.coord)
       console.log(coords)
@@ -124,16 +137,17 @@ function init() {
       if (JSON.stringify(mark.coord) == JSON.stringify(coords)) {
         console.log(mark.coord)
         shortList.push(mark);
-
-        const form = createForm(coords, shortList);
+        
+      }
+      
+    }
+    const form = createForm(coords, shortList);
 
         console.log(shortList)
     
         openBalloon(coords, form.innerHTML);
         //setBalloonContent(form.innerHTML); 
         // const address = ymaps.geocode(coords).geoObjects.get(0).getAddressLine();
-      }
-    }
     
   }
 
