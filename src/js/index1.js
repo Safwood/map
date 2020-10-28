@@ -1,24 +1,24 @@
 ymaps.ready(init);
 
-function init() {
+async function init() {
   //загрузка карты и меток
-  const myMap = new ymaps.Map("map", {
+  const myMap = await new ymaps.Map("map", {
     center: [55.76, 37.64],
     zoom: 11
   });
 
-  const myClusterer = new ymaps.Clusterer({
+  const myClusterer = await new ymaps.Clusterer({
     groupByCoordinates: false,
     clusterDisableClickZoom: true,
     clusterOpenBalloonOnClick: false
   });
 
-  myMap.geoObjects.add(myClusterer);
+  await myMap.geoObjects.add(myClusterer);
 
   let placemark = '';
   let myGeoObjects = [];
 
-  addExistingPlacemarks();
+   addExistingPlacemarks();
 
   //работа с картой
   let coords = '';
@@ -26,21 +26,18 @@ function init() {
 
   myMap.events.add('click', (e) => {
     coords = e.get('coords');
-    console.log
     onClick(coords);
   })
   
   function createPlacemark(coords) {
     placemark = new ymaps.Placemark(coords);
-    //if (!myGeoObjects.includes(placemark)) {
-      myGeoObjects.push(placemark)
-      myClusterer.add(myGeoObjects);
-    //}
-    
+
+    myGeoObjects.push(placemark)
+    myClusterer.add(myGeoObjects);
+
     placemark.events.add('click', (e) => {
       const placemarkCoords = e.get('target').geometry.getCoordinates();
 
-      console.log(e)
       onPlacemarkClick(placemarkCoords)
     })
   }
@@ -49,39 +46,27 @@ function init() {
     myMap.balloon.open(coords, content);
   }
   
-  //function setBalloonContent (content) {
-  //  myMap.balloon.setData(content);
-  //}
-
   function closeBalloon() {
     myMap.balloon.close();
   }
 
   //геоотзыв
-
   function addExistingPlacemarks() {
     if  (localStorage.getItem('markers')) {
       const allReviews = JSON.parse(localStorage.getItem('markers'));
       const newArray = [];
       const array = [];
 
-      console.log(newArray)
       for (const el of allReviews) {
-        //const string = JSON.stringify(el)
         if (!newArray || !newArray.includes(JSON.stringify(el.coord))) {
           newArray.push(JSON.stringify(el.coord))
           array.push(el.coord)
-
-          console.log(array)
         }
-        
       }
-
       for (const review of array) {
         createPlacemark(review);
       }
     }
-
   }
 
   function createForm(coords, reviews) {
@@ -93,25 +78,15 @@ function init() {
     if (reviews) {  
       for (const review of reviews) {
         const reviewList = root.querySelector('.reviews')
-        const div = document.createElement('div');
-        div.classList.add('review-item');
-        div.innerHTML = `
-        <div>${review.review.name} (${review.review.place})</div>
-        <div><i>${review.review.text}</i></div>
+        const li = document.createElement('li');
+        li.classList.add('reviews__item');
+        li.innerHTML = `
+        <div class="reviews__item-name">${review.review.name}</div>
+        <div class="reviews__item-place">${review.review.place}</div>
+        <div class="reviews__item-text">${review.review.text}</div>
         `;
 
-        reviewList.appendChild(div);
-
-        //if (review.coord == coords) {
-        //const div = document.createElement('div');
-        //div.classList.add('review-item');
-        //div.innerHTML = `
-        //<div>${review.review.name} (${review.review.place})</div>
-        //<div><i>${review.review.text}</i></div>
-        //`;
-
-        //reviewList.appendChild(div);
-        //}
+        reviewList.appendChild(li);
       }
     }
 
@@ -119,9 +94,29 @@ function init() {
   }
 
   function onClick(coords) {
-    
     const form = createForm(coords);
+
     openBalloon(coords, form.innerHTML);
+
+    //console.log(myMap)
+
+    const address = getAdress(coords)
+
+        console.log(address)
+    
+    function getAdress (coords) {
+      return new Promise ((resolve, reject) => {
+        ymaps
+        .geocode(coords)
+        .then((response) => resolve(response.geoObjects.get(0).getAddressLine()))
+        .then((response) => resolve(response.geoObjects.get(0).getAddressLine()))
+        .catch((e) => reject(e));
+
+        
+      })
+    }
+    
+    
   }
 
   function onPlacemarkClick(coords) {
@@ -129,26 +124,13 @@ function init() {
     const shortList = []; 
 
     for (const mark of list) {
-      
-
-      console.log(mark.coord)
-      console.log(coords)
-
       if (JSON.stringify(mark.coord) == JSON.stringify(coords)) {
-        console.log(mark.coord)
         shortList.push(mark);
-        
       }
-      
     }
     const form = createForm(coords, shortList);
 
-        console.log(shortList)
-    
-        openBalloon(coords, form.innerHTML);
-        //setBalloonContent(form.innerHTML); 
-        // const address = ymaps.geocode(coords).geoObjects.get(0).getAddressLine();
-    
+    openBalloon(coords, form.innerHTML);
   }
 
   function contains(arr, elem) {
@@ -176,7 +158,6 @@ function init() {
       }
   
       ////////
-
       const savedMarks = JSON.parse(localStorage.getItem('markers'))
       const array = [];
 
@@ -187,7 +168,6 @@ function init() {
       }}
 
       const answer = contains(array, coords)
-      console.log(answer)
 
       //////////
       let markers = [];
@@ -197,7 +177,6 @@ function init() {
       } 
   
       markers.push(data);
-  
       localStorage.setItem('markers', JSON.stringify(markers));
 
       if (!answer) {
@@ -205,9 +184,7 @@ function init() {
       }
 
       ////////////////////
-
       closeBalloon()
-      
     }
   })
 }

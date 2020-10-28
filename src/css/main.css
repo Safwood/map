@@ -38,3 +38,31 @@ html, body {
   overflow: scroll;
 }
 
+.reviews{
+  border: 1px gray;
+}
+
+.reviews__item {
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.reviews__item-name {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
+
+}
+.reviews__item-place {
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-decoration: underline;
+}
+.reviews__item-text {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
