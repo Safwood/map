@@ -48,7 +48,6 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-
 }
 
 .reviews__item-name {
@@ -65,4 +64,17 @@ html, body {
 .reviews__item-text {
   margin-bottom: 10px;
   font-size: 14px;
+}
+
+.bx-controls-direction {
+  display: flex;
+  justify-content: center;
+}
+
+.bx-prev {
+  margin-right: 10px;
+}
+
+.bx-viewport {
+  margin-bottom: 20px;
 }

@@ -87,6 +87,12 @@ async function init() {
         `;
 
         reviewList.appendChild(li);
+
+        $(document).ready(function(){
+          $('.reviews').bxSlider({
+            pager: false
+          });
+        });
       }
     }
 
