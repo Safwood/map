@@ -64,6 +64,7 @@ html, body {
 .reviews__item-text {
   margin-bottom: 10px;
   font-size: 14px;
+  word-break: break-all;
 }
 
 .bx-controls-direction {
@@ -78,3 +79,7 @@ html, body {
 .bx-viewport {
   margin-bottom: 20px;
 }
+
+/*.ymaps-2-1-77-balloon-pane {
+/*  overflow: scroll !important;
+/*}

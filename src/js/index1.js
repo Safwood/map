@@ -69,12 +69,16 @@ async function init() {
     }
   }
 
-  function createForm(coords, reviews) {
+  async function createForm(coords, reviews) {
+    const addressResult = await getAdress (coords);
     const root = document.createElement('div');
+    
     root.innerHTML = formTemplate;
     const reviewForm = root.querySelector('#review-form')
+    const addressForm = root.querySelector('.address')
     reviewForm.dataset.coords = JSON.stringify(coords);
-
+    addressForm.textContent = addressResult;
+    
     if (reviews) {  
       for (const review of reviews) {
         const reviewList = root.querySelector('.reviews')
@@ -95,37 +99,27 @@ async function init() {
         });
       }
     }
+    
 
     return root;
   }
 
-  function onClick(coords) {
-    const form = createForm(coords);
-
-    openBalloon(coords, form.innerHTML);
-
-    //console.log(myMap)
-
-    const address = getAdress(coords)
-
-        console.log(address)
-    
-    function getAdress (coords) {
-      return new Promise ((resolve, reject) => {
-        ymaps
-        .geocode(coords)
-        .then((response) => resolve(response.geoObjects.get(0).getAddressLine()))
-        .then((response) => resolve(response.geoObjects.get(0).getAddressLine()))
-        .catch((e) => reject(e));
-
-        
-      })
-    }
-    
-    
+  function getAdress (coords) {
+    return new Promise ((resolve, reject) => {
+      ymaps
+      .geocode(coords)
+      .then((response) => resolve(response.geoObjects.get(0).getAddressLine()))
+      .catch((e) => reject(e));
+    })
   }
 
-  function onPlacemarkClick(coords) {
+  async function onClick(coords) {
+    const form = await createForm(coords);
+
+    openBalloon(coords, form.innerHTML);
+  }
+
+  async function onPlacemarkClick(coords) {
     const list = JSON.parse(localStorage.getItem('markers'));
     const shortList = []; 
 
@@ -134,7 +128,7 @@ async function init() {
         shortList.push(mark);
       }
     }
-    const form = createForm(coords, shortList);
+    const form = await createForm(coords, shortList);
 
     openBalloon(coords, form.innerHTML);
   }
