@@ -80,6 +80,12 @@ html, body {
   margin-bottom: 20px;
 }
 
+.balloon-form {
+overflow: scroll;
+}
+
 /*.ymaps-2-1-77-balloon-pane {
 /*  overflow: scroll !important;
 /*}
+
+
