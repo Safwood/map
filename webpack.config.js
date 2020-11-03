@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const rules = require('./webpack.config.rules')();
 const path = require('path');
+const polifill = require('babel-polyfill');
 
 rules.push({
     test: /\.css$/,
@@ -16,7 +17,7 @@ rules.push({
 
 module.exports = {
     entry: {
-        index: './js/index.js'
+        index: './index.js'
     },
     devServer: {
         index: './index.html',
@@ -38,7 +39,7 @@ module.exports = {
                     ecma: 6,
                     mangle: true
                 },
-                sourceMap: true
+                sourceMap: true 
             })
         ]
     },
@@ -48,6 +49,6 @@ module.exports = {
             title: 'GeoFeedBack',
             template: 'index.hbs'
         }),
-        new CleanWebpackPlugin(['dist'])
+        new CleanWebpackPlugin(['dist']),
     ]
 };
