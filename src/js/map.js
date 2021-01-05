@@ -19,7 +19,7 @@ function mapInit() {
     let placemark = '';
     let myGeoObjects = [];
   
-     addExistingPlacemarks();
+    addExistingPlacemarks();
   
     //работа с картой
     let coords = '';
@@ -46,11 +46,7 @@ function mapInit() {
     function openBalloon(coords, content) {
       myMap.balloon.open(coords, content);
     }
-    
-    function closeBalloon() {
-      myMap.balloon.close();
-    }
-  
+      
     //геоотзыв
     function addExistingPlacemarks() {
       if  (localStorage.getItem('markers')) {
@@ -103,7 +99,7 @@ function mapInit() {
       
       return root;
     }
-  
+    
     function getAdress (coords) {
       return new Promise ((resolve, reject) => {
         ymaps
@@ -143,19 +139,25 @@ function mapInit() {
     }
   
     document.body.addEventListener('click', (e) => {
+      e.preventDefault;
+
       if (e.target.dataset.role === 'review-add') {
         const reviewForm = document.querySelector('#review-form')
         const coords = JSON.parse(reviewForm.dataset.coords);
+        const name = document.querySelector('[data-role=review-name]');
+        const place = document.querySelector('[data-role=review-place]');
+        const text = document.querySelector('[data-role=review-text]');
     
         const data = 
         {
           coord: coords,
           review: {
-            name: document.querySelector('[data-role=review-name]').value,
-            place: document.querySelector('[data-role=review-place]').value,
-            text: document.querySelector('[data-role=review-text]').value
+            name: name.value,
+            place: place.value,
+            text: text.value
           }
         }
+        
     
         const savedMarks = JSON.parse(localStorage.getItem('markers'))
         const array = [];
@@ -176,12 +178,18 @@ function mapInit() {
     
         markers.push(data);
         localStorage.setItem('markers', JSON.stringify(markers));
-  
-        if (!answer) {
-          createPlacemark(coords)
-        }
-  
-        closeBalloon()
+
+        name.value = '';
+        place.value = '';
+        text.value = '';
+
+        myMap.balloon.events.add('close', () => {
+          if (!answer) {
+            createPlacemark(coords)
+          }
+        })
+
+        onPlacemarkClick(coords)
       }
     })
   }
